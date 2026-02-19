@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import { getDb, addDoc, collection, serverTimestamp } from "@/lib/firebaseClient";
+import { SeverityChart } from "@/app/SeverityChart";
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -268,16 +269,28 @@ function CodeQualityForm() {
 
       {result && (
         <div className="mt-4 space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/80 p-3 text-sm">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
-              Summary
-            </p>
-            <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] text-zinc-400">
-              {result.issues.length} issues
-            </span>
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                  Summary
+                </p>
+                <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] text-zinc-400">
+                  {result.issues.length} issues
+                </span>
+              </div>
+              <p className="text-sm text-zinc-200">{result.overallSummary}</p>
+            </div>
+
+            <div className="mt-2 w-full max-w-xs rounded-lg border border-zinc-800 bg-zinc-950 p-2 md:mt-0">
+              <p className="mb-1 text-[11px] font-medium text-zinc-300">
+                Issues by severity
+              </p>
+              <SeverityChart issues={result.issues} />
+            </div>
           </div>
-          <p className="text-sm text-zinc-200">{result.overallSummary}</p>
-          <div className="mt-2 space-y-2">
+
+          <div className="mt-3 space-y-2">
             {result.issues.map((issue, idx) => (
               <div
                 key={idx}
